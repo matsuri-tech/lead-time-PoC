@@ -1,0 +1,9 @@
+# 不要ファイル・ディレクトリ
+node_modules
+dist
+.git
+
+# OS/IDE が生成する一時ファイル（任意）
+*.log
+.DS_Store
+.env            

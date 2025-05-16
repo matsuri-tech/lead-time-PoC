@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2016",                           /* 出力するJSのバージョン */
+    "module": "commonjs",                         /* CommonJSモジュール */
+    "rootDir": "./src",                           /* ソースコードは src/ */
+    "outDir": "./dist",                           /* 出力先ディレクトリを dist/ に */
+    "esModuleInterop": true,                      /* CommonJS モジュールとの互換性を確保 */
+    "forceConsistentCasingInFileNames": true,     /* ファイル名の大文字小文字の違いを強制 */
+    "strict": true,                               /* 厳密な型チェック */
+    "skipLibCheck": true,                         /* 型ライブラリのチェックをスキップ */
+    "noImplicitAny": true,                        /* any 型を強制しない */
+    "noUnusedLocals": true,                       /* 使用していないローカル変数をエラーに */
+    "noUnusedParameters": true,                   /* 使用していないパラメータをエラーに */
+    "sourceMap": true,                            /* ソースマップを生成 */
+    "declaration": true                           /* 型定義ファイルを生成 */
+  },
+  "include": ["src/**/*"],                        /* コンパイルするファイルは src/ 以下 */
+  "exclude": ["node_modules"]                     /* node_modules は除外 */
+}
