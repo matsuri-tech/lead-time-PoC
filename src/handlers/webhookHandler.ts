@@ -1,40 +1,55 @@
+// src/handlers/webhookHandler.ts
 import { Request, Response } from 'express';
 import { processWebhook } from '../services/hubspotWebhookService';
+import { sendSlackNotification } from '../clients/slackClient';
 
-const MEETINGS_TYPE_ID = '0-47';              // HubSpot Meetings の objectTypeId
-const CHANGE_SOURCE_MEETINGS  = 'MEETINGS'; 
+const MEETINGS_TYPE_ID        = '0-47';
+const CHANGE_SOURCE_MEETINGS  = 'MEETINGS';
 
 export const handleWebhook = async (req: Request, res: Response) => {
   try {
-    // HubSpot は配列 or 単一オブジェクトの両方を送りうる
     const events = Array.isArray(req.body) ? req.body : [req.body];
 
     for (const ev of events) {
-      const { subscriptionType, objectTypeId, objectId, changeSource, } = ev;
+      const { subscriptionType, objectTypeId, objectId, changeSource } = ev;
 
-      // ★ 「object.creation」かつ Meetings 以外は無視
+      /* ── ① イベントフィルタ ───────────────── */
       if (
-        subscriptionType  !== 'object.creation' ||
-        objectTypeId      !== MEETINGS_TYPE_ID ||
+        subscriptionType !== 'object.creation' ||
+        objectTypeId      !== MEETINGS_TYPE_ID  ||
         changeSource      !== CHANGE_SOURCE_MEETINGS
       ) {
-        console.log(`⏩  Ignored event: ${subscriptionType} / ${objectTypeId ?? 'n/a'}`);
-        continue;                               // 204 を返すので break しない
+        console.log(`⏩ Ignored: ${subscriptionType} / ${objectTypeId ?? 'n/a'}`);
+        continue;                       // 次のイベントへ
       }
-
       if (!objectId) {
-        console.warn('⚠️  objectId missing');
+        console.warn('⚠️ objectId missing');
         continue;
       }
 
-      console.log('📩 Meeting created. objectId:', objectId);
-      await processWebhook(String(objectId));   // 例：DB 保存や Slack 通知など
+      /* ── ② 個別イベント処理 ───────────────── */
+      try {
+        console.log('📩 Meeting created. objectId:', objectId);
+        await processWebhook(String(objectId));
+      } catch (err: any) {
+        /* ツアー作成や DB 保存が失敗したときだけここに来る */
+        console.error('processWebhook failed:', err);
+
+        // ここで 1 回だけ Slack 通知（重複が気にならなければそのまま）
+        await sendSlackNotification(
+          `🚨 Tour 作成エラー\n• objectId: ${objectId}\n• message: ${err.message ?? err}`
+        );
+
+        // ★ エラーを外に投げず握りつぶす → ループ継続
+      }
     }
 
-    // 何も処理しなくても HubSpot へは 2xx を返す
-    res.status(204).end();
+    /* ── ③ すべてのイベントを処理し終わったら ───────────────── */
+    res.status(204).end();              // 成功応答 ⇒ HubSpot はリトライしない
+
   } catch (err) {
-    console.error('❌ Webhook handler error:', err);
+    /* フィルタ処理や JSON 解析で想定外の例外が起きたときのみ 500 */
+    console.error('❌ Webhook handler fatal error:', err);
     res.status(500).json({ error: 'Webhook processing failed' });
   }
 };
