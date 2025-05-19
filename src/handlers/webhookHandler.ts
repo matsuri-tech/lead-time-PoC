@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { processWebhook } from '../services/hubspotWebhookService';
 
 const MEETINGS_TYPE_ID = '0-47';              // HubSpot Meetings の objectTypeId
+const CHANGE_SOURCE_MEETINGS  = 'MEETINGS'; 
 
 export const handleWebhook = async (req: Request, res: Response) => {
   try {
@@ -9,12 +10,13 @@ export const handleWebhook = async (req: Request, res: Response) => {
     const events = Array.isArray(req.body) ? req.body : [req.body];
 
     for (const ev of events) {
-      const { subscriptionType, objectTypeId, objectId } = ev;
+      const { subscriptionType, objectTypeId, objectId, changeSource, } = ev;
 
       // ★ 「object.creation」かつ Meetings 以外は無視
       if (
-        subscriptionType !== 'object.creation' ||
-        objectTypeId      !== MEETINGS_TYPE_ID
+        subscriptionType  !== 'object.creation' ||
+        objectTypeId      !== MEETINGS_TYPE_ID ||
+        changeSource      !== CHANGE_SOURCE_MEETINGS
       ) {
         console.log(`⏩  Ignored event: ${subscriptionType} / ${objectTypeId ?? 'n/a'}`);
         continue;                               // 204 を返すので break しない

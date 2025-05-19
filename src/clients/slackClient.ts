@@ -7,6 +7,7 @@ import { Tour } from '../types/slack';
 const SLACK_TOKEN = process.env.SLACK_TOKEN!;
 
 const SLACK_CHANNEL_ID = 'C08F1E5BP9U';//本番変更必要
+const SLACK_CHANNEL_FOR_NOTIFICATION = 'C08F1E5BP9U'
 
 export const sendSlackMessage = async (contact: Contact, meeting: Meeting, cleaning_id: Tour): Promise<void> => {
   const thread_ts = contact.properties.slack_thread;
@@ -67,5 +68,22 @@ export const sendSlackMessage = async (contact: Contact, meeting: Meeting, clean
   });
 
   const data = await response.json();
+  if (!data.ok) throw new Error(`Slack送信失敗: ${data.error}`);
+};
+
+export const sendSlackNotification = async (text: string) => {
+  const res = await fetch('https://slack.com/api/chat.postMessage', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${SLACK_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      channel: SLACK_CHANNEL_FOR_NOTIFICATION,
+      text,
+    }),
+  });
+
+  const data = await res.json();
   if (!data.ok) throw new Error(`Slack送信失敗: ${data.error}`);
 };
