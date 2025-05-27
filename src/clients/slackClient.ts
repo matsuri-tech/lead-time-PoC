@@ -2,8 +2,8 @@ import { ContactResponse as Contact }  from '../types/hubspot';
 import { MeetingResponse as Meeting }  from '../types/hubspot';
 
 const SLACK_TOKEN   = process.env.SLACK_TOKEN!;
-const SLACK_CHANNEL_ID               = 'C08F1E5BP9U'; // TODO: 本番に差し替え
-const SLACK_CHANNEL_FOR_NOTIFICATION = 'C08F1E5BP9U'; // TODO: 本番に差し替え
+const SLACK_CHANNEL_ID               = 'C08PD3ZNWHY'; // TODO: 本番に差し替え
+const SLACK_CHANNEL_FOR_NOTIFICATION = 'C08PD3ZNWHY'; // TODO: 本番に差し替え
 
 /* ------------------------------------------------------------------ */
 /* 1) メイン通知                                                      */
