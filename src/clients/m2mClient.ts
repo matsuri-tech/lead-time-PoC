@@ -1,6 +1,6 @@
 // src/clients/m2mClient.ts
 import axios from 'axios';
-import { Contact, Meeting } from '../types/m2m';
+import { Contact } from '../types/m2m';
 
 
 const M2M_LOGIN_URL        = 'https://api.m2msystems.cloud/login';
@@ -8,10 +8,10 @@ const M2M_CREATE_TOUR_URL  = 'https://api-cleaning.m2msystems.cloud/v3/cleanings
 
 const { M2M_EMAIL, M2M_PASSWORD } = process.env;
 
-const DEFAULT_CLEANER_IDS   = ['4afd3785-5ae8-452f-b35f-d7df7db79674']; // ✅ 本番用 ID に戻す
+const DEFAULT_CLEANER_IDS   = ['f9afe0ee-424e-4eb8-b294-ae9ff20d4257']; // ✅ 本番用 ID に戻す
 const DEFAULT_PHOTO_TOUR_ID = '9f5af4d1-412f-4951-9692-061c698711b4';
 
-export const makingTour = async (contact: Contact, meeting: Meeting): Promise<string> => {
+export const makingTour = async (contact: Contact): Promise<string> => {
   /* ===== ① ログイン ===== */
   const loginRes = await axios.post(M2M_LOGIN_URL, {
     email: M2M_EMAIL!,
@@ -21,12 +21,18 @@ export const makingTour = async (contact: Contact, meeting: Meeting): Promise<st
   if (!token) throw new Error('M2M APIトークン取得に失敗');
 
   /* ===== ② Payload ===== */
-  const cleaningDate = meeting.properties.hs_meeting_start_time_jst.split(' ')[0];
+  const cleaningDate = new Date().toLocaleString('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).replace(/\//g, '-');
+  console.log('[makingTour] cleaningDate =', cleaningDate);
   const payload = {
     placement:   'listing',
     listingId:   contact.properties.listing_id,
     cleaningDate,
-    note:        'リードタイムPoC',
+    note:        `リードタイムPoC + ${contact.properties.submission_id}`,
     cleaners:    DEFAULT_CLEANER_IDS,
     submissionId: contact.properties.submission_id,
     photoTourId: DEFAULT_PHOTO_TOUR_ID,
