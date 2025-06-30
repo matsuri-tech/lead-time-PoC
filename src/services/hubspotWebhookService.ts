@@ -18,7 +18,7 @@ export const processWebhook = async (objectId: string) => {
   let tourError: any = null;
 
   try {
-    cleaningId = await makingTour(contact, meeting); // ← Tour オブジェクト
+    cleaningId = await makingTour(contact); // ← Tour オブジェクト
                                 // ★ ID 文字列だけ取り出す
   } catch (err) {
     tourError = err;
@@ -47,10 +47,13 @@ export const processWebhook = async (objectId: string) => {
   }
 
   /* ---------- ④ DB 保存 ---------- */
+try {
   await saveToDatabase({
     meeting,
     contact,
     cleaningId,   // 成功時は ID、失敗時は null
-    tourError     // 失敗詳細（null なら成功）
   });
+} catch (err) {
+  console.log('[❌ saveToDatabase] BigQueryへの保存に失敗:', err);
+}
 };
