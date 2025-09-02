@@ -21,8 +21,8 @@ export const saveToDatabase = async ({
   const conversion_date = formatDateToJSTString(nowJST);     // e.g., "2025-06-08 20:58:11"
 
   const row = {
-    agreement: contact.properties.rule ?? null,
-    desired_action: contact.properties.selection_amenity_or_cleaning_or_both ?? null,
+    agreement: contact.properties.rule2 ?? null,
+    desired_action: contact.properties.selection_amenity_or_cleaning_or_both2 ?? null,
     listing_id: contact.properties.listing_id ?? null,
     submission_id: contact.properties.submission_id ?? null,
     slack_thread: contact.properties.slack_thread ?? null,
@@ -33,8 +33,10 @@ export const saveToDatabase = async ({
     areas_recleaning: contact.properties.cleaning_spot ?? null,
     photo_of_areas_recleaning: contact.properties.cleaning_photo ?? null,
     recleaning_type: contact.properties.recleaning_type ?? null,
-    sheets: toInt(contact.properties.sheets),
-    duvet_cover: toInt(contact.properties.dubet),
+    bed_sheets: toInt(contact.properties.bed_sheets),
+    futon_sheets: toInt(contact.properties.futon_sheets),
+    bed_duvet: toInt(contact.properties.bed_duvet),
+    futon_duvet: toInt(contact.properties.futon_duvet),
     bath_towel: toInt(contact.properties.bathtowl),
     face_towel: toInt(contact.properties.facetowl),
     amenity: contact.properties.amenity ?? null,

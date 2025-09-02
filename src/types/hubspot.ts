@@ -19,13 +19,15 @@ export interface MeetingResponse {
   export interface ContactResponse {
     id: string;
     properties: {
-      selection_amenity_or_cleaning_or_both?: string;
+      selection_amenity_or_cleaning_or_both2?: string;
       cleaning_spot?: string;
       cleaning_photo?: string | null;
-      rule?: string;
+      rule2?: string;
       recleaning_type?: string;
-      sheets?: string;
-      dubet?: string;
+      bed_sheets?: string;
+      futon_sheets?: string;
+      bed_duvet?: string;
+      futon_duvet?: string;
       bathtowl?: string;
       facetowl?: string;
       amenity?: string;
