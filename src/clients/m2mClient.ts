@@ -8,8 +8,10 @@ const M2M_CREATE_TOUR_URL  = 'https://api-cleaning.m2msystems.cloud/v3/cleanings
 
 const { M2M_EMAIL, M2M_PASSWORD } = process.env;
 
-const DEFAULT_CLEANER_IDS   = ['f9afe0ee-424e-4eb8-b294-ae9ff20d4257']; // ✅ 本番用 ID に戻す
-const DEFAULT_PHOTO_TOUR_ID = '9f5af4d1-412f-4951-9692-061c698711b4';
+const DEFAULT_CLEANER_IDS   = [`f9afe0ee-424e-4eb8-b294-ae9ff20d4257`]//[''4afd3785-5ae8-452f-b35f-d7df7db79674]; // ✅ 本番用 ID に戻す
+const DEFAULT_PHOTO_TOUR_ID = '9a60b231-a33a-465b-81fd-0be268c19ec2' // 本番用ID
+//'9f5af4d1-412f-4951-9692-061c698711b4' PoC用ID;
+
 
 export const makingTour = async (contact: Contact): Promise<string> => {
   /* ===== ① ログイン ===== */
